@@ -4,6 +4,8 @@ import "@fontsource/open-sans/700.css";
 
 import { extendTheme } from "@chakra-ui/react";
 
+import { Button } from "./button";
+
 export const theme = extendTheme({
   colors: {
     brand: {
@@ -16,5 +18,7 @@ export const theme = extendTheme({
   styles: {
     global: () => ({ body: { bg: "gray.200" } }),
   },
-  component: {},
+  components: {
+    Button,
+  },
 });
