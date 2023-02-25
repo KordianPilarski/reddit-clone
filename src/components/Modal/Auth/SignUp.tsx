@@ -2,6 +2,10 @@ import { Button, Flex, Input, Text } from "@chakra-ui/react";
 import React, { useState } from "react";
 import { useSetRecoilState } from "recoil";
 import { authModalState } from "../../../atoms/authModalAtom";
+import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { auth } from "../../../firebase/clientApp";
+import { confirmPasswordReset } from "firebase/auth";
+import { FIREBASE_ERRORS } from "../../../firebase/errors";
 
 type SignUpProps = {};
 
@@ -12,9 +16,26 @@ const SignUp: React.FC<SignUpProps> = () => {
     password: "",
     confirmPassword: "",
   });
-  const [formError, setFormError] = useState("");
+  const [error, setError] = useState("");
+  const [createUserWithEmailAndPassword, user, loading, userError] =
+    useCreateUserWithEmailAndPassword(auth);
 
-  const onSubmit = () => {};
+  const onSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (error) setError("");
+    if (signUpForm.password !== signUpForm.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    createUserWithEmailAndPassword(signUpForm.email, signUpForm.password);
+    // setSignUpForm((prev) => ({
+    //   ...prev,
+    //   email: "",
+    //   password: "",
+    //   confirmPassword: "",
+    // }));
+  };
 
   const onChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSignUpForm((prev) => ({
@@ -79,7 +100,20 @@ const SignUp: React.FC<SignUpProps> = () => {
         }}
         bg="gray.100"
       />
-      <Button width="100%" height="36px" mb={2} mt={2} type="submit">
+      {(error || userError) && (
+        <Text textAlign="center" fontSize="10pt" color="red">
+          {error ||
+            FIREBASE_ERRORS[userError?.message as keyof typeof FIREBASE_ERRORS]}
+        </Text>
+      )}
+      <Button
+        width="100%"
+        height="36px"
+        mb={2}
+        mt={2}
+        type="submit"
+        isLoading={loading}
+      >
         Sign Up
       </Button>
       <Flex fontSize="9pt" justifyContent="center">
