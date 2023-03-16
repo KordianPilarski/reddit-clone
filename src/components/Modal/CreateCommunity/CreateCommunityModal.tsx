@@ -59,7 +59,7 @@ const CreateCommunityModal: React.FC<CreateCommunityModalProps> = ({
     const format = /[ `!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~]/;
     if (format.test(communityName) || communityName.length < 3) {
       setError(
-        "Community names must be 3-21 characters, letters, number or underscores"
+        "Community names must be 3-21 characters, letters, number or underscores without spaces."
       );
       return;
     }
