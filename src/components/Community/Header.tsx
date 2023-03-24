@@ -3,12 +3,18 @@ import { Box, Button, Flex, Icon, Text, Image } from "@chakra-ui/react";
 import { FaReddit } from "react-icons/fa";
 import { Community } from "../../atoms/communitiesAtom";
 import { useSetRecoilState } from "recoil";
+import useCommunityData from "../../hooks/useCommunityData";
 
 type HeaderProps = {
   communityData: Community;
 };
 
-const Header: React.FC<HeaderProps> = ({ communityData }) => {
+const Header = ({ communityData }: HeaderProps) => {
+  const { communityStateValue, onJoinLeaveCommunity } = useCommunityData();
+  const isJoined = !!communityStateValue.mySnippets.find(
+    (snippet) => snippet.communityId === communityData.id
+  );
+
   /**
    * !!!Don't pass communityData boolean until the end
    * It's a small optimization!!!
@@ -63,7 +69,7 @@ const Header: React.FC<HeaderProps> = ({ communityData }) => {
                 pr={6}
                 pl={6}
                 onClick={() => {
-                  "add fn";
+                  onJoinLeaveCommunity(communityData, isJoined);
                 }}
               >
                 {"isJoinedVarFromAbove" ? "Joined" : "Join"}
